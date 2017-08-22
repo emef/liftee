@@ -60,10 +60,12 @@ const profileReducer = (profile = null, action) => {
     profile = profile || {
         trainingMaxes: {
             Squat: 145,
-            Bench: 165,
-            Deadlift: 185,
+            Bench: 170,  // 8/18
+            Deadlift: 195,
             OHP: 100
-        }
+        },
+
+        editing: null
     };
 
     switch (action.type) {
@@ -72,7 +74,15 @@ const profileReducer = (profile = null, action) => {
         update[action.name] = action.value;
         const trainingMaxes = Object.assign({}, profile.trainingMaxes, update);
 
-        return Object.assign({}, profile, { trainingMaxes });
+        return Object.assign({}, profile, {
+            trainingMaxes,
+            editing: null
+        });
+
+    case 'EDIT_TRAINING_MAX':
+        return Object.assign({}, profile, {
+            editing: action.lift
+        });
 
     default:
         return profile;

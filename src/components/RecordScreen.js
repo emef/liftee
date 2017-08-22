@@ -176,13 +176,13 @@ const styles = StyleSheet.create({
     },
 
     setName: {
-        color: 'white',
+        color: '#e5e5e5',
         fontSize: '3em',
         fontFamily: 'AppleSDGothicNeo-UltraLight'
     },
 
     setWeight: {
-        color: 'white',
+        color: '#e5e5e5',
         fontSize: '2em',
         fontFamily: 'AppleSDGothicNeo-UltraLight'
     },
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     },
 
     lift: {
-        color: 'white'
+        color: '#e5e5e5'
     },
 
     previewContainer: {
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     },
 
     previewTitle: {
-        color: 'white',
+        color: '#e5e5e5',
         fontSize: '3em',
         fontFamily: 'AppleSDGothicNeo-UltraLight'
     },
