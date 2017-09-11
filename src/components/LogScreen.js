@@ -1,32 +1,68 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    View } from 'react-native';
+import { connect } from 'react-redux';
 
+import Actions from '../state/Actions';
 import icon from '../img/icon_Log.png';
 
-export const LogScreen = () => (
-    <View style={styles.logContainer}>
-      <View style={styles.tabContainer}>
-        <View style={styles.tabs}>
-          <Tab name="Weekly" active={true} style={styles.tabLeft}/>
-          <Tab name="Daily" style={styles.tabRight}/>
-        </View>
-      </View>
-      <View style={styles.itemContainer}>
-        items
-      </View>
-    </View>
-);
+export const LogScreen = connect(
+    ({log, logTab}) => ({log, logTab}),
+    dispatch => ({
+        onSwitchLogTab: (tab) => dispatch(Actions.SwitchLogTab(tab))
+    })
+)(({log, logTab, onSwitchLogTab}) => {
+    const isWeeklyTab = logTab === "Weekly";
+    const logItems = generateLogItems(log, isWeeklyTab);
 
-const Tab = ({ name, active, style, onTabPressed }) => {
+    return (
+        <View style={styles.logContainer}>
+          <View style={styles.tabContainer}>
+            <View style={styles.tabs}>
+              <Tab
+                 name="Weekly"
+                 active={isWeeklyTab}
+                 style={styles.tabLeft}
+                 onSwitchLogTab={onSwitchLogTab} />
+              <Tab
+                 name="Daily"
+                 active={!isWeeklyTab}
+                 style={styles.tabRight}
+                 onSwitchLogTab={onSwitchLogTab} />
+            </View>
+          </View>
+          <ScrollView>{logItems}</ScrollView>
+        </View>
+    );
+});
+
+const Tab = ({name, active, style, onSwitchLogTab}) => {
     const tabStyle = active
               ? [style, styles.tab, styles.tabActive]
               : [style, styles.tab];
 
+    const onPress = () => onSwitchLogTab(name);
+
     return (
-        <TouchableHighlight style={tabStyle}>
-          <Text style={styles.tabText}>{ name }</Text>
+        <TouchableHighlight style={tabStyle} onPress={onPress}>
+          <Text style={styles.tabText}>{name}</Text>
         </TouchableHighlight>
     );
+};
+
+const generateLogItems = (log, isWeekly) => {
+    console.log('generating items for', log);
+
+    for (let set of log) {
+        const dayIx = (set.completedAt / (1000 * 60 * 60 * 24)) | 0;
+        const effectiveIx = isWeekly ? (dayIx / 7) | 0 : dayIx;
+        console.log(effectiveIx);
+    }
+
 };
 
 LogScreen.navigationOptions = {

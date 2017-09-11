@@ -17,10 +17,11 @@ const Actions = {
         type: 'COMPLETE_SESSION'
     },
 
-    CompleteSet: (index) => {
+    CompleteSet: (index, set) => {
         return {
             type: 'COMPLETE_SET',
-            index: index
+            index: index,
+            set: set
         };
     },
 
@@ -29,6 +30,13 @@ const Actions = {
             type: 'UPDATE_TRAINING_MAX',
             name: name,
             value: value
+        };
+    },
+
+    SwitchLogTab: (tab) => {
+        return {
+            type: 'SWITCH_LOG_TAB',
+            tab: tab
         };
     }
 };

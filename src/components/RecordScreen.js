@@ -23,13 +23,13 @@ export const RecordScreen = connect(
     dispatch => {
         return {
             onStartSession: (sets) => dispatch(Actions.StartSession(sets)),
-            onCompleteSet: (index) => dispatch(Actions.CompleteSet(index)),
+            onCompleteSet: (index, set) => dispatch(Actions.CompleteSet(index, set)),
             onCompleteSession: () => dispatch(Actions.CompleteSession)
         };
     }
 )(({ session, program, profile, onCompleteSet, onCompleteSession, onStartSession }) => {
-    let onPressStartRecord = (dayIndex) => {
-        let sets = SetsGenerator.generate(
+    const onPressStartRecord = (dayIndex) => {
+        const sets = SetsGenerator.generate(
             program.template[dayIndex],
             profile.trainingMaxes);
 
@@ -106,17 +106,17 @@ const DayView = ({ day, onPressStartRecord }) => {
 };
 
 const RecordSession = ({ session, onCompleteSet, onCompleteSession }) => {
-    let setViews = session.sets.map(function(set, i) {
+    const setViews = session.sets.map(function(set, i) {
         return (
             <SetView
                key={i}
                set={set}
-               onValueChange={() => onCompleteSet(i)} />
+               onValueChange={() => onCompleteSet(i, set)} />
         );
     });
 
-    let allDone = session.sets.every((set) => set.completed);
-    let iconFinish = allDone ? iconOk : iconCancel;
+    const allDone = session.sets.every((set) => set.completed);
+    const iconFinish = allDone ? iconOk : iconCancel;
 
     return (
         <View style={styles.recordContainer}>

@@ -89,11 +89,39 @@ const profileReducer = (profile = null, action) => {
     }
 };
 
+const logReducer = (log = [], action) => {
+    switch (action.type) {
+    case 'COMPLETE_SET':
+        const setCopy = Object.assign({}, action.set);
+        setCopy.completedAt = new Date().getTime();
+
+        const logCopy = log.slice();
+        logCopy.push(setCopy);
+
+        return logCopy;
+
+    default:
+        return log;
+    }
+};
+
+const logTabReducer = (logTab = "Weekly", action) => {
+    switch (action.type) {
+    case 'SWITCH_LOG_TAB':
+        return action.tab;
+
+    default:
+        return logTab;
+    }
+};
+
 const AppReducer = combineReducers({
     nav: navReducer,
     program: programReducer,
     session: sessionReducer,
-    profile: profileReducer
+    profile: profileReducer,
+    log: logReducer,
+    logTab: logTabReducer
 });
 
 export default AppReducer;
