@@ -1,3 +1,5 @@
+#!/bin/bash
+
 pushd `dirname $0` > /dev/null
 DEPLOYDIR=`pwd`
 popd > /dev/null
@@ -16,9 +18,9 @@ deploy() {
   ssh $LIFTEE_HOST "rmdir build"
 
   echo "installing nginx config and restarting it"
-  scp $NGINXCONF $LIFTEE_HOST: &>/dev/null
-  ssh $LIFTEE_HOST "sudo mv nginx.conf /etc/nginx/sites-available/liftee"
-  ssh $LIFTEE_HOST "sudo ln -s /etc/nginx/sites-available/liftee /etc/nginx/sites-enabled/" &>/dev/null
+  #scp $NGINXCONF $LIFTEE_HOST: &>/dev/null
+  #ssh $LIFTEE_HOST "sudo mv nginx.conf /etc/nginx/sites-available/liftee"
+  #ssh $LIFTEE_HOST "sudo ln -s /etc/nginx/sites-available/liftee /etc/nginx/sites-enabled/" &>/dev/null
   ssh $LIFTEE_HOST "sudo service nginx restart"
 
 }
