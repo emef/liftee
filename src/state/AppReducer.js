@@ -32,7 +32,8 @@ const sessionReducer = (session = null, action) => {
     case 'START_SESSION':
         return {
             sets: action.sets,
-            lastCompleted: 0
+            lastCompleted: 0,
+            lastCompletedAt: (new Date()).getTime()
         };
 
     case 'COMPLETE_SESSION':
@@ -48,7 +49,8 @@ const sessionReducer = (session = null, action) => {
 
         return Object.assign({}, session, {
             sets: sets,
-            lastCompleted: action.index
+            lastCompleted: action.index,
+            lastCompletedAt: (new Date()).getTime()
         });
 
     default:

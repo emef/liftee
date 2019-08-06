@@ -120,6 +120,8 @@ const RecordSession = ({ session, onCompleteSet, onCompleteSession }) => {
 
     return (
         <View style={styles.recordContainer}>
+          <ClockView lastCompletedAt={session.lastCompletedAt}/>
+
           <SnapScrollView itemWidth={width} index={session.lastCompleted}>
             { setViews }
           </SnapScrollView>
@@ -152,109 +154,171 @@ const SetView = ({ set, onValueChange }) => {
     );
 };
 
+class ClockView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      lastCompletedAt: props.lastCompletedAt,
+      lastRendered: (new Date()).getTime()
+    };
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  componentWillReceiveProps(newProps){
+    this.setState({lastCompletedAt: newProps.lastCompletedAt});
+  }
+
+  tick() {
+    this.setState({
+      lastRendered: (new Date()).getTime()
+    });
+  }
+
+  render() {
+    const now = (new Date()).getTime();
+    const delta = now - this.state.lastCompletedAt;
+    const seconds = Math.floor(delta / 1000) % 60;
+    const minutes = Math.floor(delta / (1000 * 60));
+    const secondsStr = seconds < 10 ? "0" + seconds : seconds.toString();
+    const minutesStr = minutes < 10 ? "0" + minutes : minutes.toString();
+
+    return (
+        <View style={styles.clockContainer}>
+          <Text style={styles.clockText}>{minutesStr}:{secondsStr}</Text>
+        </View>
+    );
+  }
+}
+
+
 RecordScreen.navigationOptions = {
     title: 'Record',
     icon: icon
 };
 
 const styles = StyleSheet.create({
-    recordContainer: {
-        flex: 1,
-        backgroundColor: '#393939',
-        width: width
-    },
+  recordContainer: {
+    flex: 1,
+    backgroundColor: '#393939',
+    width: width
+  },
 
-    setContainer: {
-        flex: 1,
-        width: width,
-        paddingTop: 100
-    },
+  clockContainer: {
+    flex: 0.3,
+    width: width,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fc4c02'
+  },
 
-    set: {
-        height: 100,
-        alignItems: 'center'
-    },
+  clockText: {
+    fontFamily: 'Impact',
+    fontSize: '3em',
+    color: '#e5e5e5',
+  },
 
-    setName: {
-        color: '#e5e5e5',
-        fontSize: '3em',
-        fontFamily: 'AppleSDGothicNeo-UltraLight'
-    },
+  setContainer: {
+    flex: 1,
+    width: width,
+    justifyContent: 'center',
+  },
 
-    setWeight: {
-        color: '#e5e5e5',
-        fontSize: '2em',
-        fontFamily: 'AppleSDGothicNeo-UltraLight'
-    },
+  set: {
+    height: 100,
+    alignItems: 'center'
+  },
 
-    switch: {
-        marginTop: 20
-    },
+  setName: {
+    color: '#e5e5e5',
+    fontSize: '3em',
+    fontFamily: 'AppleSDGothicNeo-UltraLight'
+  },
 
-    finishContainer: {
-        flex: 0.2,
-        alignItems: 'center'
-    },
+  setWeight: {
+    color: '#e5e5e5',
+    fontSize: '2em',
+    fontFamily: 'AppleSDGothicNeo-UltraLight'
+  },
 
-    iconFinish: {
-        width: 50,
-        height: 50,
-        resizeMode: 'contain'
-    },
+  switch: {
+    marginTop: 20
+  },
 
-    workoutsContainer: {
-        flex: 1,
-        width: width,
-        backgroundColor: '#393939'
-    },
+  finishContainer: {
+    flex: 0.4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
-    dayContainer: {
-        flex: 1,
-        width: width
-    },
+  iconFinish: {
+    width: 50,
+    height: 50,
+    resizeMode: 'contain'
+  },
 
-    liftsContainer: {
-        alignItems: 'flex-start',
-        marginTop: 50
-    },
+  workoutsContainer: {
+    flex: 1,
+    width: width,
+    backgroundColor: '#393939'
+  },
 
-    lift: {
-        color: '#e5e5e5'
-    },
+  dayContainer: {
+    flex: 1,
+    width: width
+  },
 
-    previewContainer: {
-        flex: 1,
-        width: width,
-        alignItems: 'center',
-        paddingTop: 100
-    },
+  liftsContainer: {
+    alignItems: 'flex-start',
+    marginTop: 50
+  },
 
-    previewTitle: {
-        color: '#e5e5e5',
-        fontSize: '3em',
-        fontFamily: 'AppleSDGothicNeo-UltraLight'
-    },
+  lift: {
+    color: '#e5e5e5'
+  },
 
-    startContainer: {
-        flex: 0.2,
-        width: width,
-        alignItems: 'center'
-    },
+  previewContainer: {
+    flex: 1,
+    width: width,
+    alignItems: 'center',
+    paddingTop: 100
+  },
 
-    startBtn: {
-        borderWidth: 1,
-        borderColor: '#1da962',
-        paddingTop: 5,
-        paddingBottom: 5,
-        paddingLeft: 10,
-        paddingRight: 10,
-        borderRadius: 10
-    },
+  previewTitle: {
+    color: '#e5e5e5',
+    fontSize: '3em',
+    fontFamily: 'AppleSDGothicNeo-UltraLight'
+  },
 
-    startBtnText: {
-        color: '#1da962',
-        fontSize: '1.5em',
-        fontFamily: 'AppleSDGothicNeo-UltraLight'
-    }
+  startContainer: {
+    flex: 0.2,
+    width: width,
+    alignItems: 'center'
+  },
+
+  startBtn: {
+    borderWidth: 1,
+    borderColor: '#1da962',
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 10
+  },
+
+  startBtnText: {
+    color: '#1da962',
+    fontSize: '1.5em',
+    fontFamily: 'AppleSDGothicNeo-UltraLight'
+  }
 
 });

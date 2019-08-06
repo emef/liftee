@@ -13,7 +13,7 @@ const store = createStore(AppReducer, undefined, autoRehydrate());
 persistStore(store, {
     storage: new CookieStorage({
         expiration: {
-            'default': 365 * 86400 // Cookies expire after one year
+            'default': 10 * 365 * 86400 // Cookies expire after ten years
         }
     })
 });
