@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    Button,
     StyleSheet,
     Text,
     TextInput,
@@ -8,15 +9,17 @@ import {
 import { connect } from 'react-redux';
 
 import Actions from '../state/Actions';
+import Programs from '../state/Programs';
 import icon from '../img/icon_Profile.png';
 
 export const ProfileScreen = connect(
-    ({ profile }) => ({ profile }),
+  ({ profile, program }) => ({ profile, program }),
     dispatch => ({
         onUpdateTrainingMax: (name, value) =>
-            dispatch(Actions.UpdateTrainingMax(name, value))
+          dispatch(Actions.UpdateTrainingMax(name, value)),
+        onSetProgram: (program_name) => dispatch(Actions.SetProgram(program_name))
     })
-)(({ profile, onUpdateTrainingMax }) => {
+  )(({ profile, program, onUpdateTrainingMax, onSetProgram }) => {
     const trainingMaxSettings = Object.keys(profile.trainingMaxes).map((name) => (
         <TrainingMaxSetting
            key={name}
@@ -27,12 +30,36 @@ export const ProfileScreen = connect(
 
     return (
         <View style={styles.profileContainer}>
+          <SectionHeader text="Program Selector" />
+          <ProgramSelector curProgram={program.name} onSetProgram={onSetProgram} />
+
+          <SectionHeader text="Current Lifts" />
           <View style={styles.settingGroupContainer}>
             { trainingMaxSettings }
           </View>
         </View>
     );
 });
+
+const ProgramSelector = ({curProgram, onSetProgram}) => {
+  const programButtons = Programs.getAllPrograms().map((name) => {
+    if (name === curProgram) {
+      return (
+          <Button key={name} onPress={() => {}} disabled title={name + " (selected)"} />
+      );
+    } else {
+      return (
+          <Button key={name} onPress={() => onSetProgram(name)} title={name} color='#2b2b2b' />
+      )
+    }
+  });
+
+  return (
+      <View>
+        {programButtons}
+      </View>
+  )
+};
 
 const TrainingMaxSetting = ({name, currentValue, onUpdateTrainingMax}) => {
     let textInput = null;
@@ -59,6 +86,12 @@ const TrainingMaxSetting = ({name, currentValue, onUpdateTrainingMax}) => {
     );
 };
 
+const SectionHeader = ({text}) => (
+    <View style={styles.sectionHeader}>
+      <Text style={styles.sectionHeaderText}>{text}</Text>
+    </View>
+);
+
 ProfileScreen.navigationOptions = {
     title: 'Profile',
     icon: icon
@@ -70,9 +103,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#393939'
     },
 
+    sectionHeader: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '2em',
+      marginTop: 40
+    },
+
+    sectionHeaderText: {
+      fontSize: '1em',
+      color: '#fc4c02'
+    },
+
+    programButton: {
+      fontFamily: 'Helvetica-Light',
+    },
+
     settingGroupContainer: {
-        marginTop: 50,
-        backgroundColor: '#2b2b2b'
+      backgroundColor: '#2b2b2b'
     },
 
     settingContainer: {

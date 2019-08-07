@@ -38,7 +38,14 @@ const Actions = {
             type: 'SWITCH_LOG_TAB',
             tab: tab
         };
-    }
+    },
+
+  SetProgram: (program_name) => {
+      return {
+          type: 'SET_PROGRAM',
+          program_name: program_name
+      };
+  }
 };
 
 export default Actions;

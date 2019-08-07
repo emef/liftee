@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import template from './2suns.js';
+import Programs from './Programs.js';
 
 const navReducer = (nav = 'Home', action) => {
     switch(action.type) {
@@ -12,18 +12,20 @@ const navReducer = (nav = 'Home', action) => {
 };
 
 const programReducer = (program, action) => {
+    program = program || {
+      name: Programs.getDefaultProgram(),
+      template: Programs.getTemplate(Programs.getDefaultProgram()),
+    };
+
     switch (action.type) {
-    case 'NEXT_DAY':
-        return Object.assign({}, program, {
-            currentDay: (program.currentDay + 1) % template.days.length
-        });
+    case 'SET_PROGRAM':
+      return {
+          name: action.program_name,
+          template: Programs.getTemplate(action.program_name)
+      };
 
     default:
-        return {
-            name: '2suns',
-            template: template,
-            currentDay: 0
-        };
+      return program;
     }
 };
 
@@ -94,10 +96,10 @@ const profileReducer = (profile = null, action) => {
 const logReducer = (log = [], action) => {
     switch (action.type) {
     case 'COMPLETE_SET':
-        const setCopy = Object.assign({}, action.set);
-        setCopy.completedAt = new Date().getTime();
-
         const logCopy = log.slice();
+        const setCopy = Object.assign({}, action.set);
+
+        setCopy.completedAt = (new Date()).getTime();
         logCopy.push(setCopy);
 
         return logCopy;
