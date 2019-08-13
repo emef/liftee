@@ -40,12 +40,16 @@ const Actions = {
         };
     },
 
-  SetProgram: (program_name) => {
-      return {
-          type: 'SET_PROGRAM',
-          program_name: program_name
-      };
-  }
+    SetProgram: (program_name) => {
+        return {
+            type: 'SET_PROGRAM',
+            program_name: program_name
+        };
+    },
+
+    ResetTimer: {
+        type: 'RESET_TIMER'
+    }
 };
 
 export default Actions;

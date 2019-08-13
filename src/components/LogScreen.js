@@ -26,12 +26,13 @@ const LogFlatList = ({log}) => {
     const month = (date.getMonth() < 10 ? "0" : "") + date.getMonth();
     const day = (date.getDate() < 10 ? "0" : "") + date.getDate();
     const dateStr = date.getFullYear() + "/" + month + "/" + day;
+    const fixedWeight = set.weight || 0;
     return (
       <View>
         <View style={logItemStyle}>
           <Text style={styles.logItemComponent}>{dateStr}</Text>
           <Text style={styles.logItemComponent}>{set.name}</Text>
-          <Text style={styles.logItemComponent}>{set.reps} x {set.weight}</Text>
+          <Text style={styles.logItemComponent}>{set.reps} x {fixedWeight}</Text>
         </View>
         <View style={styles.separator}/>
       </View>

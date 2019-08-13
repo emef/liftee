@@ -24,10 +24,11 @@ export const RecordScreen = connect(
         return {
             onStartSession: (sets) => dispatch(Actions.StartSession(sets)),
             onCompleteSet: (index, set) => dispatch(Actions.CompleteSet(index, set)),
-            onCompleteSession: () => dispatch(Actions.CompleteSession)
+            onCompleteSession: () => dispatch(Actions.CompleteSession),
+            onResetTimer: () => dispatch(Actions.ResetTimer)
         };
     }
-)(({ session, program, profile, onCompleteSet, onCompleteSession, onStartSession }) => {
+)(({ session, program, profile, onCompleteSet, onCompleteSession, onStartSession, onResetTimer }) => {
     const onPressStartRecord = (dayIndex) => {
         const sets = SetsGenerator.generate(
             program.template[dayIndex],
@@ -48,7 +49,8 @@ export const RecordScreen = connect(
             <RecordSession
                session={session}
                onCompleteSet={onCompleteSet}
-               onCompleteSession={onCompleteSession} />
+               onCompleteSession={onCompleteSession}
+               onResetTimer={onResetTimer}/>
         );
     }
 });
@@ -105,7 +107,7 @@ const DayView = ({ day, onPressStartRecord }) => {
     );
 };
 
-const RecordSession = ({ session, onCompleteSet, onCompleteSession }) => {
+const RecordSession = ({ session, onCompleteSet, onCompleteSession, onResetTimer }) => {
     const setViews = session.sets.map(function(set, i) {
         return (
             <SetView
@@ -120,7 +122,7 @@ const RecordSession = ({ session, onCompleteSet, onCompleteSession }) => {
 
     return (
         <View style={styles.recordContainer}>
-          <ClockView lastCompletedAt={session.lastCompletedAt}/>
+          <ClockView onResetTimer={onResetTimer} timerStart={session.timerStart}/>
 
           <SnapScrollView itemWidth={width} index={session.lastCompleted}>
             { setViews }
@@ -157,8 +159,9 @@ const SetView = ({ set, onValueChange }) => {
 class ClockView extends React.Component {
   constructor(props) {
     super(props);
+    this.onResetTimer = props.onResetTimer;
     this.state = {
-      lastCompletedAt: props.lastCompletedAt,
+      timerStart: props.timerStart,
       lastRendered: (new Date()).getTime()
     };
   }
@@ -175,7 +178,7 @@ class ClockView extends React.Component {
   }
 
   componentWillReceiveProps(newProps){
-    this.setState({lastCompletedAt: newProps.lastCompletedAt});
+    this.setState({timerStart: newProps.timerStart});
   }
 
   tick() {
@@ -186,16 +189,16 @@ class ClockView extends React.Component {
 
   render() {
     const now = (new Date()).getTime();
-    const delta = now - this.state.lastCompletedAt;
+    const delta = now - this.state.timerStart;
     const seconds = Math.floor(delta / 1000) % 60;
     const minutes = Math.floor(delta / (1000 * 60));
     const secondsStr = seconds < 10 ? "0" + seconds : seconds.toString();
     const minutesStr = minutes < 10 ? "0" + minutes : minutes.toString();
 
     return (
-        <View style={styles.clockContainer}>
+        <TouchableHighlight style={styles.clockContainer} onPress={this.onResetTimer}>
           <Text style={styles.clockText}>{minutesStr}:{secondsStr}</Text>
-        </View>
+        </TouchableHighlight>
     );
   }
 }

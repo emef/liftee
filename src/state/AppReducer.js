@@ -35,7 +35,7 @@ const sessionReducer = (session = null, action) => {
         return {
             sets: action.sets,
             lastCompleted: 0,
-            lastCompletedAt: (new Date()).getTime()
+            timerStart: (new Date()).getTime()
         };
 
     case 'COMPLETE_SESSION':
@@ -52,8 +52,14 @@ const sessionReducer = (session = null, action) => {
         return Object.assign({}, session, {
             sets: sets,
             lastCompleted: action.index,
-            lastCompletedAt: (new Date()).getTime()
+            timerStart: (new Date()).getTime()
         });
+
+    case 'RESET_TIMER':
+      if (session == null) return null;
+      else return Object.assign({}, session, {
+        timerStart: (new Date()).getTime()
+      });
 
     default:
         return session;
@@ -64,9 +70,10 @@ const profileReducer = (profile = null, action) => {
     profile = profile || {
         trainingMaxes: {
             Squat: 145,
-            Bench: 170,  // 8/18
+            Bench: 170,
             Deadlift: 195,
-            OHP: 100
+            OHP: 100,
+            Chins: 0
         },
 
         editing: null
