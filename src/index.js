@@ -1,28 +1,30 @@
 import React from 'react';
-import CookieStorage from 'redux-persist-cookie-storage';
 import { createStore } from 'redux';
 import { AppRegistry } from 'react-native';
-import { persistStore, autoRehydrate } from 'redux-persist';
+import { persistStore, persistReducer } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react'
+import storage from 'redux-persist/lib/storage'
 import { Provider } from 'react-redux';
 
 import AppReducer from './state/AppReducer';
 import AppWithNavigationState from './navigators/AppNavigator';
 
-const store = createStore(AppReducer, undefined, autoRehydrate());
+const persistConfig = {
+  key: 'root',
+  storage,
+}
 
-persistStore(store, {
-    storage: new CookieStorage({
-        expiration: {
-            'default': 10 * 365 * 86400 // Cookies expire after ten years
-        }
-    })
-});
+const persistedReducer = persistReducer(persistConfig, AppReducer)
+const store = createStore(persistedReducer);
+const persistor = persistStore(store)
 
 class Root extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <AppWithNavigationState />
+        <PersistGate loading={null} persistor={persistor}>
+          <AppWithNavigationState />
+        </PersistGate>
       </Provider>
     );
   }

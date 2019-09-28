@@ -73,10 +73,9 @@ const profileReducer = (profile = null, action) => {
             Bench: 170,
             Deadlift: 195,
             OHP: 100,
-            Chins: 0
         },
-
-        editing: null
+        editing: null,
+        lastDayStarted: null,
     };
 
     switch (action.type) {
@@ -93,6 +92,16 @@ const profileReducer = (profile = null, action) => {
     case 'EDIT_TRAINING_MAX':
         return Object.assign({}, profile, {
             editing: action.lift
+        });
+
+    case 'START_SESSION':
+        return Object.assign({}, profile, {
+            lastDayStarted: action.dayIndex
+        });
+
+    case 'SET_PROGRAM':
+        return Object.assign({}, profile, {
+            lastDayStarted: null
         });
 
     default:

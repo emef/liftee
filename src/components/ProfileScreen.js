@@ -69,6 +69,7 @@ const TrainingMaxSetting = ({name, currentValue, onUpdateTrainingMax}) => {
     };
 
     const onChangeText = (newValue) => onUpdateTrainingMax(name, newValue);
+    const currentValueString = currentValue.toString();
 
     return (
         <TouchableHighlight onPress={() => textInput.focus()}>
@@ -79,7 +80,7 @@ const TrainingMaxSetting = ({name, currentValue, onUpdateTrainingMax}) => {
                onChangeText={onChangeText}
                style={styles.valueText}
                editable={true}
-               defaultValue={currentValue && currentValue.toString()}
+               defaultValue={currentValueString}
                keyboardType="numeric" />
           </View>
         </TouchableHighlight>

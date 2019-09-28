@@ -22,7 +22,7 @@ export const RecordScreen = connect(
     ({ session, program, profile }) => ({ session, program, profile }),
     dispatch => {
         return {
-            onStartSession: (sets) => dispatch(Actions.StartSession(sets)),
+            onStartSession: (sets, dayIndex) => dispatch(Actions.StartSession(sets, dayIndex)),
             onCompleteSet: (index, set) => dispatch(Actions.CompleteSet(index, set)),
             onCompleteSession: () => dispatch(Actions.CompleteSession),
             onResetTimer: () => dispatch(Actions.ResetTimer)
@@ -34,14 +34,17 @@ export const RecordScreen = connect(
             program.template[dayIndex],
             profile.trainingMaxes);
 
-        onStartSession(sets);
+        onStartSession(sets, dayIndex);
     };
 
 
     if (!session) {
+        const dayIndex = (profile.lastDayStarted == null) ? 0 :
+              (profile.lastDayStarted + 1) % program.template.length;
         return (
             <Workouts
                program={program}
+               dayIndex={dayIndex}
                onPressStartRecord={onPressStartRecord} />
         );
     } else {
@@ -55,7 +58,7 @@ export const RecordScreen = connect(
     }
 });
 
-const Workouts = ({ program, onPressStartRecord }) => {
+const Workouts = ({ program, dayIndex, onPressStartRecord }) => {
     const workouts = program.template.map((day, i) => {
         return (
             <DayView
@@ -68,7 +71,7 @@ const Workouts = ({ program, onPressStartRecord }) => {
     return (
         <SnapScrollView
            itemWidth={width}
-           index={0}
+           index={dayIndex}
            style={styles.workoutsContainer}>
           { workouts }
         </SnapScrollView>
@@ -128,11 +131,13 @@ const RecordSession = ({ session, onCompleteSet, onCompleteSession, onResetTimer
             { setViews }
           </SnapScrollView>
 
-          <TouchableHighlight
-             style={styles.finishContainer}
+          <View style={styles.finishContainer}>
+            <TouchableHighlight
+             style={styles.finishTouchable}
              onPress={onCompleteSession}>
-            <Image source={iconFinish} style={styles.iconFinish} />
-          </TouchableHighlight>
+              <Image source={iconFinish} style={styles.iconFinish} />
+            </TouchableHighlight>
+          </View>
         </View>
     );
 };
@@ -261,6 +266,9 @@ const styles = StyleSheet.create({
     flex: 0.4,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  finishTouchable: {
   },
 
   iconFinish: {

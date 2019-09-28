@@ -6,10 +6,11 @@ const Actions = {
         };
     },
 
-    StartSession: (sets) => {
+    StartSession: (sets, dayIndex) => {
         return {
             type: 'START_SESSION',
-            sets: sets
+            sets: sets,
+            dayIndex: dayIndex
         };
     },
 
